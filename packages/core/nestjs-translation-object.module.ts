@@ -1,8 +1,9 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import { NestjsTranslationObjectOptions } from "./interfaces/nestjs-translation-object.options";
 import { APP_INTERCEPTOR } from "@nestjs/core";
-import { NestjsTranslationObjectInterceptor } from "./nestjs-translation-object.interceptor";
-import { NESTJS_TRANSLATION_OBJECT_TRANSFORMER_TOKEN } from "./constants";
+import { NestjsTranslationObjectInterceptor } from "./interceptors/nestjs-translation-object.interceptor";
+import { NESTJS_TRANSLATION_OBJECT_OPTIONS_TOKEN } from "./constants/constants";
+import { NestjsTranslationObjectOptions } from "./interfaces/nestjs-translation-object.options";
+import { NestjsTranslationObjectDefaultTransformer } from "./transformers/nestjs-translation-object.transformer";
 
 @Module({})
 export class NestjsTranslationObjectModule {
@@ -14,10 +15,11 @@ export class NestjsTranslationObjectModule {
                     provide: APP_INTERCEPTOR,
                     useClass: NestjsTranslationObjectInterceptor
                 },
-                ...options.transformers.map(transformer => ({
-                    provide: NESTJS_TRANSLATION_OBJECT_TRANSFORMER_TOKEN,
-                    useClass: transformer
-                }))
+                {
+                    provide: NESTJS_TRANSLATION_OBJECT_OPTIONS_TOKEN,
+                    useValue: options
+                },
+                NestjsTranslationObjectDefaultTransformer
             ]
         };
     }
