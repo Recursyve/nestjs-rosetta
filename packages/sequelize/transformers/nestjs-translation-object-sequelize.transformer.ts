@@ -8,8 +8,6 @@ export class NestjsTranslationObjectSequelizeTransformer extends NestjsTranslati
     }
 
     public override transformObject(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any {
-        console.log(objectDepth);
-
         if (super.maxObjectDepthReached(config.maxTranslationDepth, objectDepth)) {
             return value;
         }
@@ -24,7 +22,7 @@ export class NestjsTranslationObjectSequelizeTransformer extends NestjsTranslati
 
         for (const key of Object.keys(value.dataValues)) {
             if (value.dataValues[key] instanceof TranslationObject) {
-                value.dataValues[key] = (value[key] as TranslationObject).getOrFirstIfNull(config.language);
+                value.dataValues[key] = (value.dataValues[key] as TranslationObject).getOrFirstIfNull(config.language);
             } else {
                 value.dataValues[key] = super.transformValue(value.dataValues[key], objectDepth, config);
             }

@@ -46,11 +46,7 @@ export class NestjsTranslationObjectDefaultTransformer extends NestjsTranslation
             if (value[key] instanceof TranslationObject) {
                 value[key] = (value[key] as TranslationObject).getOrFirstIfNull(config.language);
             } else {
-                value[key] = this.transformValue(
-                    value[key],
-                    objectDepth,
-                    config
-                );
+                value[key] = this.transformValue(value[key], objectDepth, config);
             }
         }
         return value;
