@@ -1,5 +1,5 @@
 {
-    "name": "@recursyve/nestjs-translation-object-core",
+    "name": "@recursyve/nestjs-rosetta-core",
     "version": "8.0.0-beta-0",
     "peerDependencies": {
         "@nestjs/common": "^8.0.0",

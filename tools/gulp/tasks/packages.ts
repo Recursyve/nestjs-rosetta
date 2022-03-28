@@ -6,8 +6,8 @@ import * as log from "fancy-log";
 
 // Has to be a hardcoded object due to build order
 const packages = {
-    "nestjs-translation-object-core": createProject("packages/core/tsconfig.json"),
-    "nestjs-translation-object-sequelize": createProject("packages/sequelize/tsconfig.json"),
+    "nestjs-rosetta-core": createProject("packages/core/tsconfig.json"),
+    "nestjs-rosetta-sequelize": createProject("packages/sequelize/tsconfig.json"),
 };
 
 const modules = Object.keys(packages);
@@ -37,7 +37,7 @@ function buildPackage(packageName: string) {
     return packages[packageName]
         .src()
         .pipe(packages[packageName]())
-        .pipe(dest(dist === source ? `${dist}/${packageName.replace("nestjs-translation-object", "")}` : `${dist}/${packageName}`));
+        .pipe(dest(dist === source ? `${dist}/${packageName.replace("nestjs-rosetta", "")}` : `${dist}/${packageName}`));
 }
 
 /**

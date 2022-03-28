@@ -1,24 +1,24 @@
-import { NestjsTranslationObjectInterceptorConfig } from "../interfaces/nestjs-translation-object-interceptor.config";
 import { Injectable } from "@nestjs/common";
 import { TranslationObject } from "../models/translation-object.model";
+import { NestjsRosettaInterceptorConfig } from "../interfaces/nestjs-rosetta-interceptor.config";
 
-export abstract class NestjsTranslationObjectTransformer {
+export abstract class NestjsRosettaTransformer {
     public abstract canTransform(value: any): boolean;
 
-    public abstract transformValue(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any;
+    public abstract transformValue(value: any, objectDepth: number, config: NestjsRosettaInterceptorConfig): any;
 
-    public abstract transformArray(values: any[], objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any[];
+    public abstract transformArray(values: any[], objectDepth: number, config: NestjsRosettaInterceptorConfig): any[];
 
-    public abstract transformObject(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any;
+    public abstract transformObject(value: any, objectDepth: number, config: NestjsRosettaInterceptorConfig): any;
 }
 
 @Injectable()
-export class NestjsTranslationObjectDefaultTransformer extends NestjsTranslationObjectTransformer {
+export class NestjsRosettaDefaultTransformer extends NestjsRosettaTransformer {
     public canTransform(value: any): boolean {
         return true;
     }
 
-    public transformValue(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any {
+    public transformValue(value: any, objectDepth: number, config: NestjsRosettaInterceptorConfig): any {
         if (value instanceof Array) {
             return this.transformArray(value, objectDepth, config);
         }
@@ -29,11 +29,11 @@ export class NestjsTranslationObjectDefaultTransformer extends NestjsTranslation
         return value;
     }
 
-    public transformArray(values: any[], objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any[] {
+    public transformArray(values: any[], objectDepth: number, config: NestjsRosettaInterceptorConfig): any[] {
         return values.map((value) => this.transformValue(value, objectDepth, config));
     }
 
-    public transformObject(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any {
+    public transformObject(value: any, objectDepth: number, config: NestjsRosettaInterceptorConfig): any {
         if (this.maxObjectDepthReached(config.maxTranslationDepth, objectDepth)) {
             return value;
         }

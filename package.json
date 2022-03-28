@@ -1,5 +1,5 @@
 {
-    "name": "@recursyve/nestjs-translation-object",
+    "name": "@recursyve/nestjs-rosetta",
     "version": "1.0.0",
     "scripts": {
         "build": "gulp build --dist node_modules/@recursyve",

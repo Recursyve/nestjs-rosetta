@@ -1,13 +1,11 @@
-import { NestjsTranslationObjectDefaultTransformer } from "../../core/transformers/nestjs-translation-object.transformer";
-import { NestjsTranslationObjectInterceptorConfig } from "../../core/interfaces/nestjs-translation-object-interceptor.config";
-import { TranslationObject } from "../../core/models/translation-object.model";
+import { TranslationObject, NestjsRosettaDefaultTransformer, NestjsRosettaInterceptorConfig } from "@recursyve/nestjs-rosetta-core";
 
-export class NestjsTranslationObjectSequelizeTransformer extends NestjsTranslationObjectDefaultTransformer {
+export class NestjsRosettaSequelizeTransformer extends NestjsRosettaDefaultTransformer {
     public override canTransform(value: any): boolean {
         return value?.dataValues !== null && value?.dataValues !== undefined;
     }
 
-    public override transformObject(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any {
+    public override transformObject(value: any, objectDepth: number, config: NestjsRosettaInterceptorConfig): any {
         if (super.maxObjectDepthReached(config.maxTranslationDepth, objectDepth)) {
             return value;
         }

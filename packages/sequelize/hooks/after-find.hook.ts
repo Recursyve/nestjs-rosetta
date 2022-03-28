@@ -1,8 +1,8 @@
 import { Model } from "sequelize-typescript";
-import { SEQUELIZE_TRANSLATION_OBJECT_METADATA_KEY } from "../decorators/sequelize-translation-object.decorator";
-import { TranslationObject } from "../../core/models/translation-object.model";
+import { TranslationObject } from "@recursyve/nestjs-rosetta-core";
+import { TRANSLATION_COLUMN_METADATA_KEY } from "../decorators/translation-column.decorator";
 
-export function NestjsTranslationObjectSequelizeAfterFind(instanceOrInstances: Model | Model[]) {
+export function NestjsRosettaSequelizeAfterFind(instanceOrInstances: Model | Model[]) {
     if (!(instanceOrInstances instanceof Array)) {
         instanceOrInstances = [instanceOrInstances];
     }
@@ -11,7 +11,7 @@ export function NestjsTranslationObjectSequelizeAfterFind(instanceOrInstances: M
         if (!instance?.["dataValues"]) continue;
 
         for (const key of Object.keys(instance["dataValues"])) {
-            if (Reflect.getMetadata(SEQUELIZE_TRANSLATION_OBJECT_METADATA_KEY, Object.getPrototypeOf(instance), key)) {
+            if (Reflect.getMetadata(TRANSLATION_COLUMN_METADATA_KEY, Object.getPrototypeOf(instance), key)) {
                 instance["dataValues"][key] = new TranslationObject(instance["dataValues"][key]);
             }
         }
