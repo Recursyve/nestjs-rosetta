@@ -1,13 +1,13 @@
 import { source } from '../config';
-import { task, watch, series, dest } from "gulp";
+import { dest, series, task, watch } from "gulp";
 import { createProject } from "gulp-typescript";
 import * as sourcemaps from "gulp-sourcemaps";
 import * as log from "fancy-log";
 
 // Has to be a hardcoded object due to build order
 const packages = {
-    "rox-core": createProject("packages/core/tsconfig.json"),
-    "rox-sequelize": createProject("packages/sequelize/tsconfig.json"),
+    "nestjs-rosetta-core": createProject("packages/core/tsconfig.json"),
+    "nestjs-rosetta-sequelize": createProject("packages/sequelize/tsconfig.json"),
 };
 
 const modules = Object.keys(packages);
@@ -37,7 +37,7 @@ function buildPackage(packageName: string) {
     return packages[packageName]
         .src()
         .pipe(packages[packageName]())
-        .pipe(dest(dist === source ? `${dist}/${packageName.replace("rox-", "")}` : `${dist}/${packageName}`));
+        .pipe(dest(dist === source ? `${dist}/${packageName.replace("nestjs-rosetta-", "")}` : `${dist}/${packageName}`));
 }
 
 /**
