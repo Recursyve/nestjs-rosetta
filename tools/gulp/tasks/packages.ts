@@ -37,7 +37,7 @@ function buildPackage(packageName: string) {
     return packages[packageName]
         .src()
         .pipe(packages[packageName]())
-        .pipe(dest(dist === source ? `${dist}/${packageName.replace("nestjs-rosetta", "")}` : `${dist}/${packageName}`));
+        .pipe(dest(dist === source ? `${dist}/${packageName.replace("nestjs-rosetta-", "")}` : `${dist}/${packageName}`));
 }
 
 /**
