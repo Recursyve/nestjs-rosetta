@@ -9,7 +9,10 @@ import { map, Observable } from "rxjs";
 
 @Injectable()
 export class NestjsTranslationObjectInterceptor implements NestInterceptor {
-    constructor(@Inject(NESTJS_TRANSLATION_OBJECT_OPTIONS_TOKEN) private options: NestjsTranslationObjectOptions, private defaultTransformer: NestjsTranslationObjectDefaultTransformer) {
+    constructor(
+        @Inject(NESTJS_TRANSLATION_OBJECT_OPTIONS_TOKEN) private options: NestjsTranslationObjectOptions,
+        private defaultTransformer: NestjsTranslationObjectDefaultTransformer
+    ) {
     }
 
     public intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
@@ -18,23 +21,31 @@ export class NestjsTranslationObjectInterceptor implements NestInterceptor {
             return next.handle();
         }
 
-        return next.handle().pipe(
-            map((value) => {
-                const transformer = this.options.transformers.find(transformer => transformer.canTransform(value));
-                return (transformer ?? this.defaultTransformer).transformValue(value, 0, config);
-            })
-        );
+        return next.handle().pipe(map((value) => this.transformValue(value, config)));
+    }
+
+    private transformValue(value: any, config: NestjsTranslationObjectInterceptorConfig): any {
+        if (value instanceof Array) {
+            return value.map((v) => this.transformValue(v, config));
+        } else {
+            return this.transformObject(value, config);
+        }
+    }
+
+    private transformObject(value: any, config: NestjsTranslationObjectInterceptorConfig) {
+        const transformer = this.options.transformers.find((transformer) => transformer.canTransform(value));
+        return (transformer ?? this.defaultTransformer).transformValue(value, 0, config);
     }
 
     private buildConfigFromRequest(request: Request): NestjsTranslationObjectInterceptorConfig {
-        const language = AcceptLanguageParser.pick(
-            this.options.supportedLanguages,
-            request.header("accept-language"),
-            { loose: true }
-        ) ?? this.options.fallbackLanguage;
+        const language =
+            AcceptLanguageParser.pick(this.options.supportedLanguages, request.header("accept-language"), { loose: true }) ??
+            this.options.fallbackLanguage;
 
         const skipTranslation = request.query.skipTranslation === "true";
-        const maxTranslationDepth = Number.isInteger(request.query.maxTranslationDepth) ? Number.parseInt(<string>request.query.maxTranslationDepth) : undefined;
+        const maxTranslationDepth = Number.isInteger(+request.query.maxTranslationDepth)
+            ? Number.parseInt(<string>request.query.maxTranslationDepth)
+            : undefined;
 
         return {
             language,

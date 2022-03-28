@@ -33,7 +33,7 @@ export class TranslationObject {
         return { ...values };
     }
 
-    public toJSON(): any {
+    public toJSON(): {} {
         return this.getAll();
     }
 }

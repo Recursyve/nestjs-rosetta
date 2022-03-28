@@ -34,11 +34,7 @@ export class NestjsTranslationObjectDefaultTransformer extends NestjsTranslation
     }
 
     public transformObject(value: any, objectDepth: number, config: NestjsTranslationObjectInterceptorConfig): any {
-        if (
-            config.maxTranslationDepth !== null
-            && config.maxTranslationDepth !== undefined
-            && objectDepth > config.maxTranslationDepth
-        ) {
+        if (this.maxObjectDepthReached(config.maxTranslationDepth, objectDepth)) {
             return value;
         }
 
@@ -58,5 +54,9 @@ export class NestjsTranslationObjectDefaultTransformer extends NestjsTranslation
             }
         }
         return value;
+    }
+
+    protected maxObjectDepthReached(maxTranslationDepth: number | undefined, objectDepth: number): boolean {
+        return maxTranslationDepth !== null && maxTranslationDepth !== undefined && objectDepth > maxTranslationDepth;
     }
 }
