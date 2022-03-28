@@ -104,3 +104,12 @@ dist
 .tern-port
 
 .idea
+
+# bundle
+packages/**/*.d.ts
+packages/**/*.js
+
+# misc
+.DS_Store
+/packages/**/.npmignore
+/packages/**/LICENSE

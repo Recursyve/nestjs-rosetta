@@ -1,6 +1,4 @@
-import { NestjsTranslationObjectDefaultTransformer } from "../../core/transformers/nestjs-translation-object.transformer";
-import { NestjsTranslationObjectInterceptorConfig } from "../../core/interfaces/nestjs-translation-object-interceptor.config";
-import { TranslationObject } from "../../core/models/translation-object.model";
+import { NestjsTranslationObjectDefaultTransformer, NestjsTranslationObjectInterceptorConfig, TranslationObject } from "@recursyve/nestjs-translation-object-core";
 
 export class NestjsTranslationObjectSequelizeTransformer extends NestjsTranslationObjectDefaultTransformer {
     public override canTransform(value: any): boolean {
