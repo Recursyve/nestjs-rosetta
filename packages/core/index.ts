@@ -1,5 +1,5 @@
 export * from "./nestjs-rosetta.module";
-export * from "./transformers/nestjs-rosetta.transformer";
+export * from "./processors/translation-object.processor";
 export * from "./interfaces/nestjs-rosetta.options";
 export * from "./interfaces/nestjs-rosetta-interceptor.config";
 export * from "./interceptors/nestjs-rosetta.interceptor";

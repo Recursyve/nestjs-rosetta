@@ -1,18 +1,13 @@
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from "@nestjs/common";
 import { NESTJS_ROSETTA_OPTIONS_TOKEN } from "../constants/constants";
 import { map, Observable } from "rxjs";
-import { NestjsRosettaDefaultTransformer } from "../transformers/nestjs-rosetta.transformer";
 import { NestjsRosettaInterceptorConfig } from "../interfaces/nestjs-rosetta-interceptor.config";
 import { NestjsRosettaOptions } from "../interfaces/nestjs-rosetta.options";
 import { TranslationObject } from "../models/translation-object.model";
 
 @Injectable()
 export class NestjsRosettaInterceptor implements NestInterceptor {
-    constructor(
-        @Inject(NESTJS_ROSETTA_OPTIONS_TOKEN) private options: NestjsRosettaOptions,
-        private defaultTransformer: NestjsRosettaDefaultTransformer
-    ) {
-    }
+    constructor(@Inject(NESTJS_ROSETTA_OPTIONS_TOKEN) private options: NestjsRosettaOptions) {}
 
     public intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
         const config = NestjsRosettaInterceptorConfig.fromRequest(context.switchToHttp().getRequest(), this.options);
@@ -44,30 +39,22 @@ export class NestjsRosettaInterceptor implements NestInterceptor {
             return value;
         }
 
-        const transformer = this.options.transformers.find((transformer) => transformer.canTransform(value));
-        const transformedValue = (transformer ?? this.defaultTransformer).transformValue(value, config);
+        const processor = this.options.processors.find((transformer) => transformer.canProcess(value));
+        const processableProperties = processor?.getProcessableProperties(value) ?? Object.keys(value);
 
-        if (transformedValue.value === null || transformedValue === undefined) {
-            return transformedValue.value;
-        }
-
-        if (typeof transformedValue.value === "object") {
-            for (const key of transformedValue.transformValueKeys ?? Object.keys(transformedValue.value)) {
-                if (!transformedValue.value.hasOwnProperty(key) || transformedValue.value[key] === null || transformedValue.value[key] === undefined) {
-                    continue;
-                }
-
-                if (transformedValue.value[key] instanceof TranslationObject) {
-                    transformedValue.value[key] = (transformedValue.value[key] as TranslationObject).getOrFirstIfNull(config.language);
-                } else {
-                    transformedValue.value[key] = this.transformValue(transformedValue.value[key], depth, config);
-                }
+        for (const key of processableProperties) {
+            if (!value.hasOwnProperty(key) || value[key] === null || value[key] === undefined) {
+                continue;
             }
 
-            return transformedValue.value;
+            if (value[key] instanceof TranslationObject) {
+                value[key] = (value[key] as TranslationObject).getOrFirstIfNull(config.language);
+            } else {
+                value[key] = this.transformValue(value[key], depth, config);
+            }
         }
 
-        return this.transformValue(transformedValue.value, depth, config);
+        return value;
     }
 
     private maxObjectDepthReached(maxTranslationDepth: number | undefined, objectDepth: number): boolean {
