@@ -1,7 +1,7 @@
-import { NestjsRosettaTransformer } from "../transformers/nestjs-rosetta.transformer";
+import { TranslationObjectProcessor } from "../processors/translation-object.processor";
 
 export interface NestjsRosettaOptions {
-    transformers: NestjsRosettaTransformer[];
+    processors: TranslationObjectProcessor[];
     supportedLanguages: string[];
     fallbackLanguage: string;
 }
