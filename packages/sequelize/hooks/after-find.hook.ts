@@ -26,6 +26,8 @@ export function NestjsRosettaSequelizeAfterFind(instanceOrInstances: Model | Mod
 }
 
 function createTranslationObject(value: any, paths: string[]): any {
+    if (value === null || value === undefined || value instanceof Date) return value;
+
     if (value instanceof Array) {
         return value.map(v => createTranslationObject(v, paths));
     }
@@ -53,11 +55,19 @@ function combinePathsByHead(paths: string[]): CombinedPaths {
 
     for (const path of paths) {
         const separatorIndex = path.indexOf(".");
-        const head = path.slice(0, separatorIndex);
-        const tail = path.slice(separatorIndex + 1);
 
-        combinedPaths[path] ??= new Set<string>();
-        (combinedPaths[path] as Set<string>).add(tail);
+        let head: string;
+        let tail: string;
+
+        if (separatorIndex === -1) {
+            head = path;
+            tail = "";
+        } else {
+            head = path.slice(0, separatorIndex);
+            tail = path.slice(separatorIndex + 1);
+        }
+
+        (combinedPaths[head] ??= new Set<string>()).add(tail);
     }
 
     return combinedPaths;
