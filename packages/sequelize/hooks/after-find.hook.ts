@@ -20,6 +20,8 @@ export function NestjsRosettaSequelizeAfterFind(instanceOrInstances: Model | Mod
 
             if (!translationColumnMetadata) continue;
 
+            if (translationColumnMetadata.when && !translationColumnMetadata.when(instance)) continue;
+
             instance["dataValues"][key] = createTranslationObject(instance["dataValues"][key], translationColumnMetadata.paths);
         }
     }

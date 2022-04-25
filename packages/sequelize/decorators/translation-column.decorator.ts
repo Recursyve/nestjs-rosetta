@@ -2,7 +2,7 @@ import { TranslationColumnMetadataInterface } from "../interfaces/translation-co
 
 export const TRANSLATION_COLUMN_METADATA_KEY = "translation_column_metadata_key";
 
-export const TranslationColumn = (...paths): PropertyDecorator => {
+export const TranslationColumn = (...paths: string[]): PropertyDecorator => {
     return (target: any, propertyKey: string | symbol) => {
         const metadata = { paths } as TranslationColumnMetadataInterface;
 

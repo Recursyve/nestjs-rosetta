@@ -2,6 +2,7 @@ import { TranslationObject } from "@recursyve/nestjs-rosetta-core";
 import { Column, DataType, Model, Sequelize, Table } from "sequelize-typescript";
 import { TranslationColumn } from "../decorators/translation-column.decorator";
 import { NestjsRosettaSequelizeAfterFind } from "./after-find.hook";
+import { TranslateWhen } from "../decorators/translate-when.decorator";
 
 @Table
 class MyCustomModel extends Model {
@@ -20,6 +21,20 @@ class NestedTranslationModel extends Model {
             link: TranslationObject
         }
     ];
+}
+
+@Table
+class ConditionalNestedTranslationModel extends Model {
+    @Column(DataType.JSON)
+    @TranslateWhen((value: ConditionalNestedTranslationModel) => value.config.type === "select")
+    @TranslationColumn("values.value")
+    config: {
+        type: "select" | "integer",
+        values?: {
+            key: string,
+            value: TranslationObject
+        }[]
+    };
 }
 
 @Table
@@ -48,7 +63,7 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
             username: 'root',
             password: '',
             storage: ':memory:',
-            models: [MyCustomModel, NestedTranslationModel, MultiLevelNestedTranslationModel],
+            models: [MyCustomModel, NestedTranslationModel, MultiLevelNestedTranslationModel, ConditionalNestedTranslationModel],
             hooks: {
                 afterFind: NestjsRosettaSequelizeAfterFind
             }
@@ -145,5 +160,59 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
         expect(queriedInstance.data.someField.moreNestedField).not.toBeInstanceOf(TranslationObject);
         expect(queriedInstance.data.someField.moreNestedField.name).toBeInstanceOf(TranslationObject);
         expect(typeof queriedInstance.data.aDateBecauseWhyNot).toBe("string");
+    });
+
+    it("Columns should only be translated when TranslateWhen returns true", async () => {
+        const selectInstance = await ConditionalNestedTranslationModel.create({
+            config: {
+                type: "select",
+                values: [
+                    { key: "one", value: { fr: "Un", en: "One" } },
+                    { key: "two", value: { fr: "Deux", en: "Two" } },
+                ]
+            }
+        });
+
+        const integerInstance = await ConditionalNestedTranslationModel.create({
+            config: {
+                type: "integer"
+            }
+        });
+
+        const integerInstanceWithValues = await ConditionalNestedTranslationModel.create({
+            config: {
+                type: "integer",
+                values: [
+                    { key: "a", value: { fr: "A FR", en: "A EN" } },
+                    { key: "b", value: { fr: "B FR", en: "C EN" } },
+                ]
+            }
+        });
+
+        const queriedSelectInstance = await ConditionalNestedTranslationModel.findByPk(selectInstance.id);
+        const queriedIntegerInstance = await ConditionalNestedTranslationModel.findByPk(integerInstance.id);
+        const queriedIntegerInstanceWithValues = await ConditionalNestedTranslationModel.findByPk(integerInstanceWithValues.id);
+
+        expect(queriedSelectInstance.config).not.toBeInstanceOf(TranslationObject);
+        expect(queriedSelectInstance.config.type).toBe("select");
+        expect(queriedSelectInstance.config.values).toBeInstanceOf(Array);
+        queriedSelectInstance.config.values.forEach(value => {
+            expect(value).not.toBeInstanceOf(TranslationObject);
+            expect(typeof value.key).toBe("string");
+            expect(value.value).toBeInstanceOf(TranslationObject);
+        });
+
+        expect(queriedIntegerInstance.config).not.toBeInstanceOf(TranslationObject);
+        expect(queriedIntegerInstance.config.type).toBe("integer");
+        expect(queriedIntegerInstance.config.values).toBeUndefined();
+
+        expect(queriedIntegerInstanceWithValues.config).not.toBeInstanceOf(TranslationObject);
+        expect(queriedIntegerInstanceWithValues.config.type).toBe("integer");
+        expect(queriedIntegerInstanceWithValues.config.values).toBeInstanceOf(Array);
+        queriedIntegerInstanceWithValues.config.values.forEach(value => {
+            expect(value).not.toBeInstanceOf(TranslationObject);
+            expect(typeof value.key).toBe("string");
+            expect(value.value).not.toBeInstanceOf(TranslationObject);
+        });
     });
 });
