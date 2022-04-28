@@ -1,5 +1,5 @@
 import { TranslationObject } from "@recursyve/nestjs-rosetta-core";
-import { Column, DataType, Model, Sequelize, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, ForeignKey, Model, Sequelize, Table } from "sequelize-typescript";
 import { TranslationColumn } from "../decorators/translation-column.decorator";
 import { NestjsRosettaSequelizeAfterFind } from "./after-find.hook";
 import { TranslateWhen } from "../decorators/translate-when.decorator";
@@ -38,6 +38,23 @@ class ConditionalNestedTranslationModel extends Model {
 }
 
 @Table
+class ModelWithNestedModel extends Model {
+    @AllowNull(false)
+    @ForeignKey(() => MyCustomModel)
+    @Column
+    myCustomModelId: number;
+
+    @ForeignKey(() => ModelWithNestedModel)
+    modelWithNestedModelId?: number;
+
+    @BelongsTo(() => MyCustomModel)
+    myCustomModel: MyCustomModel;
+
+    @BelongsTo(() => ModelWithNestedModel)
+    modelWithNestedModel?: ModelWithNestedModel;
+}
+
+@Table
 class MultiLevelNestedTranslationModel extends Model {
     @Column(DataType.JSON)
     @TranslationColumn("name", "someField.names", "someField.moreNestedField.name")
@@ -63,7 +80,7 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
             username: 'root',
             password: '',
             storage: ':memory:',
-            models: [MyCustomModel, NestedTranslationModel, MultiLevelNestedTranslationModel, ConditionalNestedTranslationModel],
+            models: [MyCustomModel, NestedTranslationModel, MultiLevelNestedTranslationModel, ConditionalNestedTranslationModel, ModelWithNestedModel],
             hooks: {
                 afterFind: NestjsRosettaSequelizeAfterFind
             }
@@ -214,5 +231,68 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
             expect(typeof value.key).toBe("string");
             expect(value.value).not.toBeInstanceOf(TranslationObject);
         });
+    });
+
+    it("Nested models with translation columns should have those columns converted to TranslationObject", async () => {
+        const myCustomModel1 = await MyCustomModel.create({
+            testJson: {
+                fr: "Test FR",
+                en: "Test EN"
+            }
+        });
+
+        const modelWithNestedModel1 = await ModelWithNestedModel.create({
+            myCustomModelId: myCustomModel1.id
+        });
+
+        const modelWithNestedModel2 = await ModelWithNestedModel.create({
+            myCustomModelId: myCustomModel1.id,
+            modelWithNestedModelId: modelWithNestedModel1.id
+        });
+
+        try {
+            const queriedModelWithNestedModel1 = await ModelWithNestedModel.findByPk(modelWithNestedModel1.id, {
+                include: [
+                    {
+                        model: MyCustomModel,
+                        as: "myCustomModel"
+                    },
+                    {
+                        model: ModelWithNestedModel,
+                        as: "modelWithNestedModel"
+                    }
+                ]
+            });
+            const queriedModelWithNestedModel2 = await ModelWithNestedModel.findByPk(modelWithNestedModel2.id, {
+                include: [
+                    {
+                        model: MyCustomModel,
+                        as: "myCustomModel"
+                    },
+                    {
+                        model: ModelWithNestedModel,
+                        as: "modelWithNestedModel",
+                        include: [
+                            {
+                                model: MyCustomModel,
+                                as: "myCustomModel"
+                            },
+                            {
+                                model: ModelWithNestedModel,
+                                as: "modelWithNestedModel"
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            expect(queriedModelWithNestedModel1.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
+            expect(queriedModelWithNestedModel1.modelWithNestedModel).toBeUndefined();
+            expect(queriedModelWithNestedModel2.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
+            expect(queriedModelWithNestedModel2.modelWithNestedModel).toBeInstanceOf(ModelWithNestedModel);
+            expect(queriedModelWithNestedModel2.modelWithNestedModel.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
+        } catch (e) {
+            console.log(e);
+        }
     });
 });
