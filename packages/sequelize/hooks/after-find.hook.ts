@@ -18,7 +18,14 @@ export function NestjsRosettaSequelizeAfterFind(instanceOrInstances: Model | Mod
                 key
             ) as TranslationColumnMetadataInterface;
 
-            if (!translationColumnMetadata) continue;
+            if (!translationColumnMetadata) {
+                if (Array.isArray(instance["dataValues"][key]) || typeof instance["dataValues"][key] === "object") {
+                    // Run the hook on nested models
+                    NestjsRosettaSequelizeAfterFind(instance["dataValues"][key]);
+                }
+
+                continue;
+            }
 
             if (translationColumnMetadata.when && !translationColumnMetadata.when(instance)) continue;
 
