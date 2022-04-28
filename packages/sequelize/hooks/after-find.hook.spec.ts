@@ -44,14 +44,8 @@ class ModelWithNestedModel extends Model {
     @Column
     myCustomModelId: number;
 
-    @ForeignKey(() => ModelWithNestedModel)
-    modelWithNestedModelId?: number;
-
     @BelongsTo(() => MyCustomModel)
     myCustomModel: MyCustomModel;
-
-    @BelongsTo(() => ModelWithNestedModel)
-    modelWithNestedModel?: ModelWithNestedModel;
 }
 
 @Table
@@ -234,65 +228,25 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
     });
 
     it("Nested models with translation columns should have those columns converted to TranslationObject", async () => {
-        const myCustomModel1 = await MyCustomModel.create({
+        const myCustomModel = await MyCustomModel.create({
             testJson: {
                 fr: "Test FR",
                 en: "Test EN"
             }
         });
 
-        const modelWithNestedModel1 = await ModelWithNestedModel.create({
-            myCustomModelId: myCustomModel1.id
+        const modelWithNestedModel = await ModelWithNestedModel.create({
+            myCustomModelId: myCustomModel.id
         });
 
-        const modelWithNestedModel2 = await ModelWithNestedModel.create({
-            myCustomModelId: myCustomModel1.id,
-            modelWithNestedModelId: modelWithNestedModel1.id
+        const queriedModelWithNestedModel = await ModelWithNestedModel.findByPk(modelWithNestedModel.id, {
+            include: {
+                all: true,
+                nested: true
+            }
         });
 
-        try {
-            const queriedModelWithNestedModel1 = await ModelWithNestedModel.findByPk(modelWithNestedModel1.id, {
-                include: [
-                    {
-                        model: MyCustomModel,
-                        as: "myCustomModel"
-                    },
-                    {
-                        model: ModelWithNestedModel,
-                        as: "modelWithNestedModel"
-                    }
-                ]
-            });
-            const queriedModelWithNestedModel2 = await ModelWithNestedModel.findByPk(modelWithNestedModel2.id, {
-                include: [
-                    {
-                        model: MyCustomModel,
-                        as: "myCustomModel"
-                    },
-                    {
-                        model: ModelWithNestedModel,
-                        as: "modelWithNestedModel",
-                        include: [
-                            {
-                                model: MyCustomModel,
-                                as: "myCustomModel"
-                            },
-                            {
-                                model: ModelWithNestedModel,
-                                as: "modelWithNestedModel"
-                            }
-                        ]
-                    }
-                ]
-            });
-
-            expect(queriedModelWithNestedModel1.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
-            expect(queriedModelWithNestedModel1.modelWithNestedModel).toBeUndefined();
-            expect(queriedModelWithNestedModel2.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
-            expect(queriedModelWithNestedModel2.modelWithNestedModel).toBeInstanceOf(ModelWithNestedModel);
-            expect(queriedModelWithNestedModel2.modelWithNestedModel.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
-        } catch (e) {
-            console.log(e);
-        }
+        expect(queriedModelWithNestedModel.myCustomModel).toBeInstanceOf(MyCustomModel);
+        expect(queriedModelWithNestedModel.myCustomModel.testJson).toBeInstanceOf(TranslationObject);
     });
 });
