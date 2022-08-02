@@ -1,6 +1,6 @@
 {
     "name": "@recursyve/nestjs-rosetta-core",
-    "version": "8.0.0-beta.10",
+    "version": "8.0.0-beta.11",
     "publishConfig": {
         "access": "public"
     },
