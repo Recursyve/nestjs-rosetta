@@ -1,16 +1,24 @@
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from "@nestjs/common";
-import { NESTJS_ROSETTA_OPTIONS_TOKEN } from "../constants/constants";
+import { NESTJS_ROSETTA_OPTIONS_TOKEN, NESTJS_ROSETTA_SKIP_TRANSLATIONS_KEY } from "../constants/constants";
 import { map, Observable } from "rxjs";
 import { NestjsRosettaInterceptorConfig } from "../interfaces/nestjs-rosetta-interceptor.config";
 import { NestjsRosettaOptions } from "../interfaces/nestjs-rosetta.options";
 import { TranslationObject } from "../models/translation-object.model";
+import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class NestjsRosettaInterceptor implements NestInterceptor {
-    constructor(@Inject(NESTJS_ROSETTA_OPTIONS_TOKEN) private options: NestjsRosettaOptions) {}
+    constructor(@Inject(NESTJS_ROSETTA_OPTIONS_TOKEN) private options: NestjsRosettaOptions, private reflector: Reflector) {}
 
-    public intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
-        const config = NestjsRosettaInterceptorConfig.fromRequest(context.switchToHttp().getRequest(), this.options);
+    public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+        const request = context.switchToHttp().getRequest();
+
+        const skipTranslations = this.reflector.get<boolean>(NESTJS_ROSETTA_SKIP_TRANSLATIONS_KEY, context.getHandler());
+        if (skipTranslations) {
+            return next.handle();
+        }
+
+        const config = NestjsRosettaInterceptorConfig.fromRequest(request, this.options);
         if (config.skipTranslation) {
             return next.handle();
         }
@@ -19,6 +27,8 @@ export class NestjsRosettaInterceptor implements NestInterceptor {
     }
 
     private transformValue(value: any, depth: number, config: NestjsRosettaInterceptorConfig): any {
+        if (value === null || value === undefined) return value;
+
         if (value instanceof Array) {
             return value.map((v) => this.transformValue(v, depth, config));
         }
@@ -28,10 +38,6 @@ export class NestjsRosettaInterceptor implements NestInterceptor {
         }
 
         return value;
-    }
-
-    private transformArray(value: Array<any>, depth: number, config: NestjsRosettaInterceptorConfig): Array<any> {
-        return value.map(v => this.transformValue(v, depth, config));
     }
 
     private transformObject(value: any, depth: number, config: NestjsRosettaInterceptorConfig) {
