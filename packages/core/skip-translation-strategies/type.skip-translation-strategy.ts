@@ -2,11 +2,14 @@ import { SkipTranslationStrategy } from "./skip-translation-strategy";
 import { Type } from "@nestjs/common";
 
 export class TypeSkipTranslationStrategy extends SkipTranslationStrategy {
-    constructor(private type: Type) {
+    private types: Type[];
+
+    constructor(...types: Type[]) {
         super();
+        this.types = types;
     }
 
     public override shouldSkip(value: any): boolean {
-        return value instanceof this.type;
+        return this.types.some(type => value instanceof type);
     }
 }

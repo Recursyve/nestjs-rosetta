@@ -10,9 +10,7 @@ import { Readable } from "stream";
 @Module({})
 export class NestjsRosettaModule {
     static readonly DEFAULT_SKIP_TRANSLATION_STRATEGIES = [
-        new TypeSkipTranslationStrategy(Buffer),
-        new TypeSkipTranslationStrategy(StreamableFile),
-        new TypeSkipTranslationStrategy(Readable),
+        new TypeSkipTranslationStrategy(Buffer, StreamableFile, Readable, Object),
     ];
 
     public static forRoot(options: NestjsRosettaOptions): DynamicModule {
