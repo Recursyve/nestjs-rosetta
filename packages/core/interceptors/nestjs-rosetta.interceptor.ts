@@ -23,7 +23,11 @@ export class NestjsRosettaInterceptor implements NestInterceptor {
             return next.handle();
         }
 
-        return next.handle().pipe(map((value) => this.transformValue(value, 0, config)));
+        return next.handle().pipe(map((value) => {
+            if (this.options.skipTranslationStrategies?.some(strategy => strategy.shouldSkip(value))) return value;
+
+            return this.transformValue(value, 0, config);
+        }));
     }
 
     private transformValue(value: any, depth: number, config: NestjsRosettaInterceptorConfig): any {
