@@ -16,7 +16,7 @@ export class NestjsRosettaInterceptorConfig {
             AcceptLanguageParser.pick(opts.supportedLanguages, request.header("accept-language"), { loose: true }) ??
             opts.fallbackLanguage;
 
-        const skipTranslation = <string>request.query.skipTranslation === "true";
+        const skipTranslation = request.query.skipTranslation === "true";
         const maxTranslationDepth = Number.isInteger(+request.query.maxTranslationDepth)
             ? Number.parseInt(<string>request.query.maxTranslationDepth)
             : undefined;
