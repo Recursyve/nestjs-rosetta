@@ -9,7 +9,7 @@ export class NestjsRosettaMongooseQueryUtils {
 
     public static hydrateTranslationObjects(docType: Type, value: any | any[]): void {
         const metadata = Reflect.getMetadata(TRANSLATION_FIELDS_METADATA_KEY, docType) as TranslationFieldMetadataInterface | null;
-        if (!metadata?.translationPaths?.length) return;
+        if (!metadata?.paths?.length) return;
 
         if (Array.isArray(value)) {
             for (const r of value) {
@@ -19,7 +19,7 @@ export class NestjsRosettaMongooseQueryUtils {
             return;
         }
 
-        for (const translationPath of metadata.translationPaths) {
+        for (const translationPath of metadata.paths) {
             this.hydrateTranslationObjectsInner(docType, value, translationPath.split("."), translationPath);
         }
     }

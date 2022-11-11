@@ -66,5 +66,8 @@
         "coverageDirectory": "./coverage",
         "testEnvironment": "node",
         "collectCoverage": true
+    },
+    "dependencies": {
+        "@nestjs/mongoose": "^9.2.1"
     }
 }

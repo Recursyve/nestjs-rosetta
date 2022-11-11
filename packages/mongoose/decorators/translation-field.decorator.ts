@@ -1,36 +1,17 @@
+import { PropertyMetadata } from "@nestjs/mongoose/dist/metadata/property-metadata.interface";
+import { TypeMetadataStorage } from "@nestjs/mongoose/dist/storages/type-metadata.storage";
 import { TranslationFieldMetadataInterface } from "../interfaces/translation-field-metadata.interface";
 
 export const TRANSLATION_FIELDS_METADATA_KEY = "rosetta_mongo_translation_field_metadata_key";
 
-export const TranslationFields = (translationPaths: string[]): PropertyDecorator & ClassDecorator => {
-    return (target: any, propertyKey?: string | symbol) => {
-        const metadata = { translationPaths: [] } as TranslationFieldMetadataInterface;
-        if (propertyKey) {
-            for (const translationPath of translationPaths) {
-                metadata.translationPaths.push(`${String(propertyKey)}.${translationPath}`);
-            }
-        } else {
-            metadata.translationPaths.push(...translationPaths);
+export const TranslationFields = (...paths: string[]): PropertyDecorator => {
+    return (target: any, propertyKey: string | symbol) => {
+        const property = ((TypeMetadataStorage as any).properties as PropertyMetadata[]).find(x => x.propertyKey === propertyKey && x.target === target.constructor);
+        if (!property) {
+            console.log("R: No property found");
+            return
         }
 
-        const oldMetadata = Reflect.getMetadata(TRANSLATION_FIELDS_METADATA_KEY, target) as TranslationFieldMetadataInterface | null;
-        if (oldMetadata?.translationPaths?.length) {
-            metadata.translationPaths.push(...oldMetadata.translationPaths);
-        }
-
-        Reflect.defineMetadata(TRANSLATION_FIELDS_METADATA_KEY, metadata, target);
+        property.options["rosetta"] = { paths } as TranslationFieldMetadataInterface;
     };
 };
-
-/*
-    execAndTranslate<Model>(): Promise<ResultType> {
-      const result = await exec();
-      MongooseUtils.transformResults(typeof Model, result);
-      return result;
-    }
-
-    test(target, results): void {
-      const metadata: { paths: string[] } = Reflect.getMetadata("key", target);
-
-    }
- */

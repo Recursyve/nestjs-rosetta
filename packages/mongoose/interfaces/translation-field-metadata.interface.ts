@@ -1,3 +1,3 @@
 export interface TranslationFieldMetadataInterface {
-    translationPaths: string[];
+    paths: string[];
 }
