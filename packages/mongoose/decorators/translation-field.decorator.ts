@@ -2,8 +2,6 @@ import { PropertyMetadata } from "@nestjs/mongoose/dist/metadata/property-metada
 import { TypeMetadataStorage } from "@nestjs/mongoose/dist/storages/type-metadata.storage";
 import { TranslationFieldMetadataInterface } from "../interfaces/translation-field-metadata.interface";
 
-export const TRANSLATION_FIELDS_METADATA_KEY = "rosetta_mongo_translation_field_metadata_key";
-
 export const TranslationFields = (...paths: string[]): PropertyDecorator => {
     return (target: any, propertyKey: string | symbol) => {
         const property = ((TypeMetadataStorage as any).properties as PropertyMetadata[]).find(x => x.propertyKey === propertyKey && x.target === target.constructor);
