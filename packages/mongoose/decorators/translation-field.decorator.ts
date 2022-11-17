@@ -6,7 +6,6 @@ export const TranslationFields = (...paths: string[]): PropertyDecorator => {
     return (target: any, propertyKey: string | symbol) => {
         const property = ((TypeMetadataStorage as any).properties as PropertyMetadata[]).find(x => x.propertyKey === propertyKey && x.target === target.constructor);
         if (!property) {
-            console.log("R: No property found");
             return
         }
 
