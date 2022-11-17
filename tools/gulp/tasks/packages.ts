@@ -8,6 +8,7 @@ import * as log from "fancy-log";
 const packages = {
     "nestjs-rosetta-core": createProject("packages/core/tsconfig.json"),
     "nestjs-rosetta-sequelize": createProject("packages/sequelize/tsconfig.json"),
+    "nestjs-rosetta-mongoose": createProject("packages/mongoose/tsconfig.json")
 };
 
 const modules = Object.keys(packages);

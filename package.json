@@ -15,7 +15,8 @@
         "@nestjs/common": "^8.0.0",
         "@nestjs/core": "^8.0.0",
         "rxjs": "^7.5.5",
-        "accept-language-parser": "^1.5.0"
+        "accept-language-parser": "^1.5.0",
+        "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {
         "@nestjs/common": "^8.0.5",
@@ -40,6 +41,7 @@
         "gulp-typescript": "^6.0.0-alpha.1",
         "jest": "^27.5.1",
         "lerna": "2.11.0",
+        "mongoose": "^6.6.5",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^7.5.5",
         "sequelize": "^6.19.0",
@@ -64,5 +66,8 @@
         "coverageDirectory": "./coverage",
         "testEnvironment": "node",
         "collectCoverage": true
+    },
+    "dependencies": {
+        "@nestjs/mongoose": "^9.2.1"
     }
 }
