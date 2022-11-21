@@ -19,6 +19,10 @@ function transformModel(docs: Model<any> | Model<any>[], schema: Schema) {
     }
 
     for (const doc of docs) {
+        if (doc === null || doc === undefined) {
+            continue;
+        }
+
         for (const key in schema.obj) {
             const obj = schema.obj[key];
             if (!obj["rosetta"]) {
