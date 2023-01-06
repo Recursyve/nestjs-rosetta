@@ -1,5 +1,5 @@
+import { TranslationObject, TranslationObjectOptions } from "@recursyve/nestjs-rosetta-core";
 import { Model, Schema } from "mongoose";
-import { TranslationObject } from "@recursyve/nestjs-rosetta-core";
 import { TranslationFieldMetadataInterface } from "../interfaces/translation-field-metadata.interface";
 
 export function rosettaPlugin(schema: Schema) {
@@ -33,26 +33,27 @@ function transformModel(docs: Model<any> | Model<any>[], schema: Schema) {
             }
 
             const config = obj["rosetta"] as TranslationFieldMetadataInterface;
-            doc[key] = createTranslationObject(doc[key], config.paths);
+            const { paths, ...options } = config;
+            doc[key] = createTranslationObject(doc[key], paths, options);
         }
     }
 }
 
-function createTranslationObject(value: any, paths: string[]): any {
+function createTranslationObject(value: any, paths: string[], options?: TranslationObjectOptions): any {
     if (value === null || value === undefined || value instanceof Date) return value;
 
     if (value instanceof Array) {
-        return value.map(v => createTranslationObject(v, paths));
+        return value.map(v => createTranslationObject(v, paths, options));
     }
 
     if (!paths.length || paths.every(path => !path)) {
-        return new TranslationObject(value);
+        return new TranslationObject(value, options);
     }
 
     const combinedPaths = combinePathsByHead(paths);
     for (const [head, tails] of Object.entries(combinedPaths)) {
         if (typeof value === "object") {
-            value[head] = createTranslationObject(value[head], [...tails]);
+            value[head] = createTranslationObject(value[head], [...tails], options);
         }
     }
 

@@ -2,9 +2,19 @@ import { TranslationColumnMetadataInterface } from "../interfaces/translation-co
 
 export const TRANSLATION_COLUMN_METADATA_KEY = "translation_column_metadata_key";
 
-export const TranslationColumn = (...paths: string[]): PropertyDecorator => {
+export function TranslationColumn(options: { paths: string[], disableFallback?: boolean }): PropertyDecorator;
+export function TranslationColumn(...paths: string[]): PropertyDecorator;
+export function TranslationColumn(...args: any[]): PropertyDecorator {
     return (target: any, propertyKey: string | symbol) => {
-        const metadata = { paths } as TranslationColumnMetadataInterface;
+        const transformArgs = (...args: any[]): TranslationColumnMetadataInterface => {
+            if (typeof args[0] === "object" && args[0].paths) {
+                return args[0];
+            }
+
+            return { paths: args };
+        };
+
+        const metadata = transformArgs(args);
 
         Reflect.defineMetadata(TRANSLATION_COLUMN_METADATA_KEY, metadata, target, propertyKey);
     };
