@@ -6,9 +6,12 @@ export function TranslationFields(options: { paths?: string[], disableFallback?:
 export function TranslationFields(...paths: string[]): PropertyDecorator;
 export function TranslationFields(...args: any[]): PropertyDecorator {
     return (target: any, propertyKey: string | symbol) => {
-        const transformArgs = (...args: any[]): TranslationFieldMetadataInterface => {
+        const transformArgs = (args: any[]): TranslationFieldMetadataInterface => {
             if (typeof args[0] === "object") {
-                return args[0];
+                return {
+                    paths: [],
+                    ...args[0]
+                };
             }
 
             return { paths: args };

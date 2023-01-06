@@ -10,6 +10,7 @@ describe("TranslationObject", () => {
     it("Setting disableFallback at true should return not fallback the to the first available translation", () => {
         const obj = new TranslationObject({ fr: "Test!" }, { disableFallback: true });
         expect(obj).toBeDefined();
+        expect(obj.getOrFirstIfNull("fr")).toEqual("Test!");
         expect(obj.getOrFirstIfNull("en")).toEqual(null);
     });
 });
