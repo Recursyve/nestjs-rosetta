@@ -2,9 +2,9 @@ import { PropertyMetadata } from "@nestjs/mongoose/dist/metadata/property-metada
 import { TypeMetadataStorage } from "@nestjs/mongoose/dist/storages/type-metadata.storage";
 import { TranslationFieldMetadataInterface } from "../interfaces/translation-field-metadata.interface";
 
-export function TranslationColumn(options: { paths: string[], disableFallback?: boolean }): PropertyDecorator;
-export function TranslationColumn(...paths: string[]): PropertyDecorator;
-export function TranslationColumn(...args: any[]): PropertyDecorator {
+export function TranslationFields(options: { paths: string[], disableFallback?: boolean }): PropertyDecorator;
+export function TranslationFields(...paths: string[]): PropertyDecorator;
+export function TranslationFields(...args: any[]): PropertyDecorator {
     return (target: any, propertyKey: string | symbol) => {
         const transformArgs = (...args: any[]): TranslationFieldMetadataInterface => {
             if (typeof args[0] === "object" && args[0].paths) {
