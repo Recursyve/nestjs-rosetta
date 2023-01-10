@@ -8,8 +8,8 @@
         "test": "jest",
         "clean": "gulp clean:bundle",
         "prerelease": "gulp copy-misc && gulp build --dist node_modules/@recursyve",
-        "publish": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --force-publish --access public --exact -m \"Publish %s release\"",
-        "publish:beta": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --npm-tag=beta --access public -m \"Publish %s release\""
+        "publish": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --force-publish --exact -m \"Publish %s release\"",
+        "publish:beta": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --dist-tag=beta -m \"Publish %s release\""
     },
     "peerDependencies": {
         "@nestjs/common": "^8.0.0",
