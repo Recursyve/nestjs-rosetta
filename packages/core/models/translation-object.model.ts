@@ -1,9 +1,11 @@
+import { TranslationObjectOptions } from "../interfaces/translation-object.options";
+
 export class TranslationObject {
     [key: string]: string | unknown;
 
     private readonly _languages: string[];
 
-    constructor(translations: string | Object) {
+    constructor(translations: string | Object, public readonly options?: TranslationObjectOptions) {
         try {
             if (typeof translations === "string") {
                 translations = JSON.parse(translations);
@@ -16,16 +18,22 @@ export class TranslationObject {
         }
     }
 
-    public get(language: string): string {
-        return this[language] as string;
+    public get(language: string): string | null {
+        return this[language] as string ?? null;
     }
 
-    public getOrFirstIfNull(language: string): string {
+    public getOrFirstIfNull(language: string): string | null {
         if (this[language]) return this[language] as string;
+
+        if (this.options?.disableFallback) {
+            return null;
+        }
 
         for (const language of this._languages) {
             if (this[language]) return this[language] as string;
         }
+
+        return null;
     }
 
     public getAll(): {} {

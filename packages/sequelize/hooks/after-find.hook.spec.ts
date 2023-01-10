@@ -12,6 +12,13 @@ class MyCustomModel extends Model {
 }
 
 @Table
+class NestedTranslationWithoutFallbackModel extends Model {
+    @Column(DataType.JSON)
+    @TranslationColumn({ disableFallback: true })
+    testJson: TranslationObject;
+}
+
+@Table
 class NestedTranslationModel extends Model {
     @Column(DataType.JSON)
     @TranslationColumn("name", "link")
@@ -74,7 +81,7 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
             username: 'root',
             password: '',
             storage: ':memory:',
-            models: [MyCustomModel, NestedTranslationModel, MultiLevelNestedTranslationModel, ConditionalNestedTranslationModel, ModelWithNestedModel],
+            models: [MyCustomModel, NestedTranslationWithoutFallbackModel, NestedTranslationModel, MultiLevelNestedTranslationModel, ConditionalNestedTranslationModel, ModelWithNestedModel],
             hooks: {
                 afterFind: NestjsRosettaSequelizeAfterFind
             }
@@ -103,6 +110,22 @@ describe("NestjsRosettaSequelizeAfterFind", () => {
         const queriedInstance = await MyCustomModel.findByPk(instance.id);
 
         expect(queriedInstance.testJson).toBeInstanceOf(TranslationObject);
+    });
+
+    it("Creating a model instance with disableFallback should create an instance of TranslationObject with the appropriate options", async () => {
+        const instance = await NestedTranslationWithoutFallbackModel.create({
+            testJson: {
+                fr: "Bonjour Monde!"
+            }
+        });
+
+        const queriedInstance = await NestedTranslationWithoutFallbackModel.findByPk(instance.id);
+
+        expect(queriedInstance).toBeDefined();
+        expect(queriedInstance.testJson).toBeDefined();
+        expect(queriedInstance.testJson).toBeInstanceOf(TranslationObject);
+        expect(queriedInstance.testJson.getOrFirstIfNull("fr")).toBe("Bonjour Monde!");
+        expect(queriedInstance.testJson.getOrFirstIfNull("en")).toBe(null);
     });
 
     it("Creating a model instance with nested translation object should have its translation column as instances of TranslationObject", async () => {

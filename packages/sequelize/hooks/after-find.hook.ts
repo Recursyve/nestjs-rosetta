@@ -1,5 +1,5 @@
 import { Model } from "sequelize-typescript";
-import { TranslationObject } from "@recursyve/nestjs-rosetta-core";
+import { TranslationObject, TranslationObjectOptions } from "@recursyve/nestjs-rosetta-core";
 import { TRANSLATION_COLUMN_METADATA_KEY } from "../decorators/translation-column.decorator";
 import { TranslationColumnMetadataInterface } from "../interfaces/translation-column-metadata.interface";
 
@@ -27,28 +27,29 @@ export function NestjsRosettaSequelizeAfterFind(instanceOrInstances: Model | Mod
                 continue;
             }
 
-            if (translationColumnMetadata.when && !translationColumnMetadata.when(instance)) continue;
+            const { when, paths, ...options } = translationColumnMetadata;
+            if (when && !when(instance)) continue;
 
-            instance["dataValues"][key] = createTranslationObject(instance["dataValues"][key], translationColumnMetadata.paths);
+            instance["dataValues"][key] = createTranslationObject(instance["dataValues"][key], paths, options);
         }
     }
 }
 
-function createTranslationObject(value: any, paths: string[]): any {
+function createTranslationObject(value: any, paths: string[], options?: TranslationObjectOptions): any {
     if (value === null || value === undefined || value instanceof Date) return value;
 
     if (value instanceof Array) {
-        return value.map(v => createTranslationObject(v, paths));
+        return value.map(v => createTranslationObject(v, paths, options));
     }
 
     if (!paths.length || paths.every(path => !path)) {
-        return new TranslationObject(value);
+        return new TranslationObject(value, options);
     }
 
     const combinedPaths = combinePathsByHead(paths);
     for (const [head, tails] of Object.entries(combinedPaths)) {
         if (typeof value === "object") {
-            value[head] = createTranslationObject(value[head], [...tails]);
+            value[head] = createTranslationObject(value[head], [...tails], options);
         }
     }
 
