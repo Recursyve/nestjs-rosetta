@@ -12,7 +12,7 @@ export class TranslationObject {
             }
 
             Object.assign(this, translations);
-            this._languages = Object.keys(translations).filter(x => x !== "_languages");
+            this._languages = Object.keys(translations).filter(x => x !== "_languages" && x !== "options");
         } catch (e) {
             this._languages = [];
         }
