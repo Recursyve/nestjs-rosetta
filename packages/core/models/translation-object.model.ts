@@ -37,7 +37,7 @@ export class TranslationObject {
     }
 
     public getAll(): {} {
-        const { _languages, ...values } = this;
+        const { _languages, options, ...values } = this;
         return { ...values };
     }
 
