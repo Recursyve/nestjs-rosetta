@@ -1,6 +1,6 @@
 {
     "name": "@recursyve/nestjs-rosetta-mongoose",
-    "version": "9.0.0-beta.23",
+    "version": "10.0.0-beta.24",
     "publishConfig": {
         "access": "public"
     },
