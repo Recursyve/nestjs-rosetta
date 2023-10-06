@@ -1,25 +1,25 @@
 {
     "name": "@recursyve/nestjs-rosetta-mongoose",
-    "version": "9.0.0-beta.22",
+    "version": "9.0.0-beta.23",
     "publishConfig": {
         "access": "public"
     },
     "license": "MIT",
     "peerDependencies": {
-        "@nestjs/common": ">=9.0.0",
-        "@nestjs/core": ">=9.0.0",
-        "@nestjs/mongoose": ">=9.0.0",
-        "@recursyve/nestjs-rosetta-core": ">=9.0.0-beta",
+        "@nestjs/common": ">=10.2.0",
+        "@nestjs/core": ">=10.2.0",
+        "@nestjs/mongoose": ">=10.0.0",
+        "@recursyve/nestjs-rosetta-core": ">=10.0.0-beta.23",
         "mongoose": ">=6.6.5 || >= 7.0.0",
         "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {
-        "@nestjs/common": "^9.2.1",
-        "@nestjs/core": "^9.2.1",
-        "@recursyve/nestjs-rosetta-core": "^9.0.0",
+        "@nestjs/common": "^10.2.7",
+        "@nestjs/core": "^10.2.7",
+        "@recursyve/nestjs-rosetta-core": "^10.0.0-beta.23",
         "mongoose": "^7.5.4",
         "tslint": "^6.1.2",
-        "typescript": "^4.3.5"
+        "typescript": "^5.2.2"
     },
     "gitHead": "d70c8e2eacf6c39dac77e4b846e46559d28fa50c"
 }
