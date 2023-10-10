@@ -19,6 +19,8 @@ export class NestjsRosettaInterceptor implements NestInterceptor {
         }
 
         const config = NestjsRosettaInterceptorConfig.fromRequest(request, this.options);
+        request.rosetta = config;
+
         if (config.skipTranslation) {
             return next.handle();
         }
