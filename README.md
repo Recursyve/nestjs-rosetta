@@ -13,7 +13,7 @@ In the root application module, we need to import the module, using `NestjsRoset
 We can provide multiple options to the module:
 
 | Property                  | Type                         | Description                                                                                                                                          |
-|---------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | processors                | TranslationObjectProcessor[] | Defines `TranslationObjectProcessor` to be used by `nestjs-rosetta`. [See below](#translationobjectprocessor) for more info about object processors. |
 | supportedLanguages        | string[]                     | Array of supported languages. ex: `["en", "fr"]`                                                                                                     |
 | fallbackLanguage          | string[]                     | Language on which to fallback if no language can be retrieved from the `Accept-Language` or the language is not in the `supportedLanguages` array.   |
@@ -21,24 +21,27 @@ We can provide multiple options to the module:
 
 ## Sequelize
 
-In order to use `nestjs-rosetta` with `Sequelize`, we first need to install `@recursyve/nestjs-rosetta-sequelize`.
+In order to use `nestjs-rosetta` with `Sequelize`, we first need to install `@lightx/nestjs-rosetta-sequelize`.
 
 Once installed, we can add the `NestjsRosettaSequelizeModule` to our application's root module imports, and configure the `NestjsRosettaModule`:
 
 ```typescript
 import { Module } from "@nestjs/common";
-import { NestjsRosettaModule } from "@recursyve/nestjs-rosetta-core";
-import { NestjsRosettaSequelizeModule, SequelizeTranslationObjectProcessor } from "@recursyve/nestjs-rosetta-sequelize";
+import { NestjsRosettaModule } from "@lightx/nestjs-rosetta-core";
+import {
+  NestjsRosettaSequelizeModule,
+  SequelizeTranslationObjectProcessor,
+} from "@lightx/nestjs-rosetta-sequelize";
 
 @Module({
-    imports: [
-        NestjsRosettaModule.forRoot({
-            processors: [new SequelizeTranslationObjectProcessor()],
-            supportedLanguages: ["en", "fr"],
-            fallbackLanguage: "en"
-        }),
-        NestjsRosettaSequelizeModule
-    ]
+  imports: [
+    NestjsRosettaModule.forRoot({
+      processors: [new SequelizeTranslationObjectProcessor()],
+      supportedLanguages: ["en", "fr"],
+      fallbackLanguage: "en",
+    }),
+    NestjsRosettaSequelizeModule,
+  ],
 })
 export class ApplicationModule {}
 ```
@@ -46,16 +49,22 @@ export class ApplicationModule {}
 We are now ready to define translation columns in our models:
 
 ```typescript
-import { AllowNull, Column, DataType, Model, Table } from "sequelize-typescript";
+import {
+  AllowNull,
+  Column,
+  DataType,
+  Model,
+  Table,
+} from "sequelize-typescript";
 import { TranslationColumn } from "./translation-column.decorator";
 import { TranslationObject } from "./translation-object.model";
 
 @Table
 class MyModel extends Model {
-    @AllowNull(false)
-    @Column(DataType.JSON)
-    @TranslationColumn()
-    name: TranslationObject;
+  @AllowNull(false)
+  @Column(DataType.JSON)
+  @TranslationColumn()
+  name: TranslationObject;
 }
 ```
 
@@ -65,7 +74,7 @@ Now, whenever we retrieve model instances from the database and return them to t
 
 `TranslationObjectProcessor` are used to retrieve translatable properties on supported objects.
 
-For example, the `SequelizeTranslationObjectProcessor` (from `@recursyve/nestjs-rosetta-sequelize`) returns the `dataValues` property of sequelize model instances, since we don't need to traverse the entire objects, because the user-defined values will always be in `dataValues`.
+For example, the `SequelizeTranslationObjectProcessor` (from `@lightx/nestjs-rosetta-sequelize`) returns the `dataValues` property of sequelize model instances, since we don't need to traverse the entire objects, because the user-defined values will always be in `dataValues`.
 
 ## `SkipTranslationStrategy`
 
@@ -79,6 +88,6 @@ If `skipTranslationStrategies` is not passed in the module's options, it will de
 Certain options can be passed via query params by the client:
 
 | Name                | Type    | Description                                                                                                                                                                                 |
-|---------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | skipTranslation     | boolean | If the value is `true`, `TranslationObject`s won't be translated for the current request. This can be used if the client wants to have the entire `TranslationObject`. Defaults to `false`. |
 | maxTranslationDepth | integer | Recursive depth at which to stop looking for `TranslationObject` to translate.                                                                                                              |

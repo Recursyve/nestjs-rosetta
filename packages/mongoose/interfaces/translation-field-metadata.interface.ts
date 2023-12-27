@@ -1,5 +1,6 @@
-import { TranslationObjectOptions } from "@recursyve/nestjs-rosetta-core";
+import { TranslationObjectOptions } from "@lightx/nestjs-rosetta-core";
 
-export interface TranslationFieldMetadataInterface extends TranslationObjectOptions {
-    paths: string[];
+export interface TranslationFieldMetadataInterface
+  extends TranslationObjectOptions {
+  paths: string[];
 }

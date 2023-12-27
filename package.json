@@ -1,20 +1,20 @@
 {
-    "name": "@recursyve/nestjs-rosetta",
+    "name": "@lightx/nestjs-rosetta",
     "version": "1.0.0",
     "scripts": {
-        "build": "gulp build --dist node_modules/@recursyve",
+        "build": "gulp build --dist node_modules/@lightx",
         "prebuild:prod": "npm run clean",
         "build:prod": "gulp build",
         "test": "jest",
         "clean": "gulp clean:bundle",
-        "prerelease": "gulp copy-misc && gulp build --dist node_modules/@recursyve",
+        "prerelease": "gulp copy-misc && gulp build --dist node_modules/@lightx",
         "publish": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --force-publish --exact -m \"Publish %s release\"",
         "publish:beta": "npm run prerelease && npm run build:prod && ./node_modules/.bin/lerna publish --dist-tag=beta -m \"Publish %s release\""
     },
     "peerDependencies": {
         "@nestjs/common": "^10.0.0",
         "@nestjs/core": "^10.0.0",
-        "rxjs": "^7.5.5",
+        "rxjs": ">=7.5.5",
         "accept-language-parser": "^1.5.0",
         "reflect-metadata": "^0.1.13"
     },
@@ -43,7 +43,7 @@
         "lerna": "^6.4.0",
         "mongoose": "^7.5.4",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.8.0",
+        "rxjs": ">=7.8.0",
         "sequelize": "^6.33.0",
         "sequelize-typescript": "^2.1.5",
         "sqlite3": "^5.1.6",

@@ -1,6 +1,6 @@
 {
-    "name": "@recursyve/nestjs-rosetta-core",
-    "version": "10.0.0-beta.25",
+    "name": "@lightx/nestjs-rosetta-core",
+    "version": "10.0.1",
     "publishConfig": {
         "access": "public"
     },
@@ -9,7 +9,7 @@
         "@nestjs/common": "^10.2.0",
         "@nestjs/core": "^10.2.0",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.5.5"
+        "rxjs": ">=7.5.5"
     },
     "dependencies": {
         "accept-language-parser": "^1.5.0"
