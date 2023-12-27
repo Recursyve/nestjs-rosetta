@@ -11,7 +11,7 @@
         "@nestjs/mongoose": ">=10.0.0",
         "@recursyve/nestjs-rosetta-core": ">=10.0.0-beta.23",
         "mongoose": ">=6.6.5 || >= 7.0.0",
-        "reflect-metadata": "^0.1.13"
+        "reflect-metadata": ">=0.1.13"
     },
     "devDependencies": {
         "@nestjs/common": "^10.2.7",

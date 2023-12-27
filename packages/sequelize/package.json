@@ -10,7 +10,7 @@
         "@nestjs/core": ">=10.2.0",
         "@nestjs/sequelize": ">=10.0.0",
         "@recursyve/nestjs-rosetta-core": ">=10.0.0-beta.23",
-        "reflect-metadata": "^0.1.13",
+        "reflect-metadata": ">=0.1.13",
         "sequelize": "^6.33.0",
         "sequelize-typescript": "^2.1.5"
     },
