@@ -42,6 +42,10 @@ export class TranslationObject {
     }
 
     public isTranslatedIn(languages: string[]): boolean {
+        if (!languages.length) {
+            return false;
+        }
+
         const translatedLanguages = Object.keys(this.getAll());
         return languages.every(language => translatedLanguages.includes(language));
     }
