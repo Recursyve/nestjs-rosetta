@@ -39,6 +39,12 @@ describe("TranslationObject", () => {
             expect(translationObject.isTranslatedIn(["fr", "en"])).toEqual(false);
         });
 
+        it("should return false if translation object has no translation", () => {
+            const translationObject = new TranslationObject({});
+
+            expect(translationObject.isTranslatedIn(["fr"])).toEqual(false);
+        });
+
         it("should return false if the languages passed is an empty array", () => {
             const translationObject = new TranslationObject({ es: "si" });
 

@@ -42,11 +42,11 @@ export class TranslationObject {
     }
 
     public isTranslatedIn(languages: string[]): boolean {
-        if (!languages.length) {
+        const translatedLanguages = Object.keys(this.getAll());
+        if (!languages.length || !translatedLanguages.length) {
             return false;
         }
 
-        const translatedLanguages = Object.keys(this.getAll());
         return languages.every(language => translatedLanguages.includes(language));
     }
 
