@@ -41,6 +41,12 @@ export class TranslationObject {
         return { ...values };
     }
 
+    public isTranslatedIn(languages: string[]): boolean {
+        return Object.keys(this.getAll()).every((languageTranslatedIn) =>
+            languages.includes(languageTranslatedIn)
+        );
+    }
+
     public toJSON(): {} {
         return this.getAll();
     }
