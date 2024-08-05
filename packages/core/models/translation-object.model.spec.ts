@@ -13,4 +13,42 @@ describe("TranslationObject", () => {
         expect(obj.getOrFirstIfNull("fr")).toEqual("Test!");
         expect(obj.getOrFirstIfNull("en")).toEqual(null);
     });
+
+    describe("isTranslatedId", () => {
+        it("should return true if the translation object is translated in all the languages passed in", () => {
+            const translationObject = new TranslationObject({ fr: "oui", en: "yes" });
+
+            expect(translationObject.isTranslatedIn(["fr", "en"])).toEqual(true);
+        });
+
+        it("should return true if the translation object is translated in all the languages passed in and much more", () => {
+            const translationObject = new TranslationObject({ fr: "oui", en: "yes", es: "si" });
+
+            expect(translationObject.isTranslatedIn(["fr", "en"])).toEqual(true);
+        });
+
+        it("should return false if the translation object is translated in some of the languages passed", () => {
+            const translationObject = new TranslationObject({ fr: "oui", en: "yes" });
+
+            expect(translationObject.isTranslatedIn(["fr", "es"])).toEqual(false);
+        });
+
+        it("should return false if the translation object is not translated in any of the languages passed", () => {
+            const translationObject = new TranslationObject({ es: "si" });
+
+            expect(translationObject.isTranslatedIn(["fr", "en"])).toEqual(false);
+        });
+
+        it("should return false if translation object has no translation", () => {
+            const translationObject = new TranslationObject({});
+
+            expect(translationObject.isTranslatedIn(["fr"])).toEqual(false);
+        });
+
+        it("should return false if the languages passed is an empty array", () => {
+            const translationObject = new TranslationObject({ es: "si" });
+
+            expect(translationObject.isTranslatedIn([])).toEqual(false);
+        });
+    });
 });

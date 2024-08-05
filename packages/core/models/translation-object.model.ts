@@ -41,6 +41,15 @@ export class TranslationObject {
         return { ...values };
     }
 
+    public isTranslatedIn(languages: string[]): boolean {
+        const translatedLanguages = Object.keys(this.getAll());
+        if (!languages.length || !translatedLanguages.length) {
+            return false;
+        }
+
+        return languages.every(language => translatedLanguages.includes(language));
+    }
+
     public toJSON(): {} {
         return this.getAll();
     }
