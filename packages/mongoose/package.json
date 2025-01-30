@@ -1,6 +1,6 @@
 {
     "name": "@recursyve/nestjs-rosetta-mongoose",
-    "version": "10.0.0-beta.26",
+    "version": "10.0.0-beta.27",
     "publishConfig": {
         "access": "public"
     },
@@ -16,7 +16,7 @@
     "devDependencies": {
         "@nestjs/common": "^10.2.7",
         "@nestjs/core": "^10.2.7",
-        "@recursyve/nestjs-rosetta-core": "^10.0.0-beta.26",
+        "@recursyve/nestjs-rosetta-core": "^10.0.0-beta.27",
         "mongoose": "^7.5.4",
         "tslint": "^6.1.2",
         "typescript": "^5.2.2"
