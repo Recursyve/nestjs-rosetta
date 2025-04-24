@@ -3,7 +3,7 @@ import { Model, Schema } from "mongoose";
 import { TranslationFieldMetadataInterface } from "../interfaces/translation-field-metadata.interface";
 
 export function rosettaPlugin(schema: Schema) {
-    schema.post(["find", "findOne", "findOneAndDelete", "findOneAndRemove", "findOneAndReplace", "findOneAndUpdate"], (doc: Model<any>, next) => {
+    schema.post(["find", "findOne", "findOneAndDelete", "findOneAndReplace", "findOneAndUpdate"], (doc: Model<any>, next) => {
         transformModel(doc, schema);
         next();
     });

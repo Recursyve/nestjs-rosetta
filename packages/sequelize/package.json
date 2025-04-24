@@ -6,22 +6,22 @@
     },
     "license": "MIT",
     "peerDependencies": {
-        "@nestjs/common": ">=10.2.0",
-        "@nestjs/core": ">=10.2.0",
-        "@nestjs/sequelize": ">=10.0.0",
-        "@recursyve/nestjs-rosetta-core": ">=10.0.0-beta.23",
-        "reflect-metadata": "^0.1.13",
+        "@nestjs/common": ">=11.0.0",
+        "@nestjs/core": ">=11.0.0",
+        "@nestjs/sequelize": ">=11.0.0",
+        "@recursyve/nestjs-rosetta-core": ">=11.0.0-beta.30",
+        "reflect-metadata": "^0.2.0",
         "sequelize": "^6.33.0",
-        "sequelize-typescript": "^2.1.5"
+        "sequelize-typescript": "^2.1.6"
     },
     "devDependencies": {
-        "@nestjs/common": "^10.2.7",
-        "@nestjs/core": "^10.2.7",
-        "@recursyve/nestjs-rosetta-core": "^10.0.0-beta.28",
-        "sequelize": "^6.6.5",
-        "sequelize-typescript": "^2.1.0",
+        "@nestjs/common": "^11.1.0",
+        "@nestjs/core": "^11.1.0",
+        "@recursyve/nestjs-rosetta-core": "^11.0.0-beta.30",
+        "sequelize": "^6.37.7",
+        "sequelize-typescript": "^2.1.6",
         "tslint": "^6.1.2",
-        "typescript": "^5.2.2"
+        "typescript": "^5.8.3"
     },
     "gitHead": "78683fdbc2c1c2c04d42f0966c722a6265add1d8"
 }
